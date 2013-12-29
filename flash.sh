@@ -240,9 +240,12 @@ flash_gaia()
 {
 	GAIA_MAKE_FLAGS="ADB=\"$ADB\""
 	USER_VARIANTS="user(debug)?"
+	PRODUCTION_FLAGS="production"
 	if [[ "$VARIANT" =~ $USER_VARIANTS ]]; then
 		# Gaia's build takes care of remounting /system for production builds
 		GAIA_MAKE_FLAGS+=" PRODUCTION=1"
+	elif [[ "$VARIANT" =~ $PRODUCTION_FLAGS ]]; then
+		GAIA_MAKE_FLAGS+=" NTFU=1 DOGFOOD=0 PRODUCTION=1 REMOTE_DEBUGGER=1"
 	fi
 	adb wait-for-device
 	if adb shell cat /data/local/webapps/webapps.json | grep -qs '"basePath": "/system' ; then
